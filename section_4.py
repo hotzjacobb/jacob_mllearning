@@ -1,27 +1,22 @@
 import pandas as pd
 import numpy as np
+np.random.seed(1)
 
+paris_listings = pd.read_csv("paris_airbnb.csv")
+paris_listings = paris_listings.loc[np.random.permutation(len(paris_listings))]
+stripped_commas = paris_listings['price'].str.replace(',', '')
+stripped_dollars = stripped_commas.str.replace('$', '')
+paris_listings['price'] = stripped_dollars.astype('float')
+train_df = paris_listings.iloc[0:6000]
+test_df = paris_listings.iloc[6000:]
 
-airbnb = pd.read_csv('paris_airbnb.csv')
+def predict_price(new_listing):
+    temp_df = train_df.copy()
+    temp_df['distance'] = temp_df['accommodates'].apply(lambda x: np.abs(x - new_listing))
+    temp_df = temp_df.sort_values('distance')
+    nearest_neighbor_prices = temp_df.iloc[0:5]['price']
+    predicted_price = nearest_neighbor_prices.mean()
+    return(predicted_price)
 
-# clean up price data for calculations
-new_price = airbnb['price'].str.replace(',', '')  # remove commas
-new_price = new_price.str.replace('$', "")  # remove $
-try:
-    airbnb['price'] = new_price.astype('float')
-except ValueError:
-    print("non-numeric price")
-
-airbnb_len = len(airbnb)
-airbnb_training = airbnb.iloc[0:int(airbnb_len*3/4)].copy() # used in calculation
-airbnb_testing = airbnb.iloc[int(airbnb_len*3/4):airbnb_len] # given a predicted price
-
-def predict_price(rooms):
-    # get all airbnb with same room count and then calc. avg. price
-    training_matches = airbnb_training.loc[airbnb_training['accommodates'] == rooms]
-    return training_matches['price'].mean()
-
-airbnb_testing['predicted_price'] = airbnb_testing['accommodates'].apply(lambda x: predict_price(x))
-
-airbnb_testing['difference'] = airbnb_testing.apply(lambda row: abs(row['price'] - row['predicted_price']), axis=1)
-print(airbnb_testing)
+test_df['predicted_price'] = test_df['accommodates'].apply(lambda x: predict_price(x))
+print(test_df['predicted_price'])
