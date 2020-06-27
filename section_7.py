@@ -22,19 +22,17 @@ split_one = airbnb.iloc[0:4000]
 split_two = airbnb.iloc[4000:8000]
 
 # train first split to predict second split
-first_knn = KNeighborsRegressor()
-first_knn.fit(split_one[['accommodates']], split_one[['price']])
-first_preds = first_knn.predict(split_two[['accommodates']]) # preds. for second split prices
+knn = KNeighborsRegressor()
+knn.fit(split_one[['accommodates']], split_one[['price']])
+first_preds = knn.predict(split_two[['accommodates']]) # preds. for second split prices
 first_rmse = np.sqrt(metrics.mean_squared_error(split_two[['price']], first_preds))
 
 # train second split to predict first 
-second_knn = KNeighborsRegressor()
-second_knn.fit(split_two[['accommodates']], split_two[['price']])
-second_preds = first_knn.predict(split_one[['accommodates']]) # preds. for second split prices
+knn.fit(split_two[['accommodates']], split_two[['price']])
+second_preds = knn.predict(split_one[['accommodates']]) # preds. for second split prices
 second_rmse = np.sqrt(metrics.mean_squared_error(split_one[['price']], second_preds))
 
 mean = np.mean([first_preds, second_preds])
-print('hey')
 print(mean)
 
 
