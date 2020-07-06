@@ -26,4 +26,13 @@ testing_err = np.sqrt(metrics.mean_squared_error(testing_data['SalePrice'],
                pre_price_test))
 print(testing_err)
 print(training_err)
-
+# now use two varriable model
+lr.fit(training_data[['Gr Liv Area', "Overall Cond"]], training_data[target])
+two_var_pred_train = lr.predict(training_data[['Gr Liv Area', "Overall Cond"]])
+two_var_pred_test = lr.predict(testing_data[['Gr Liv Area', "Overall Cond"]])
+training_err_two = np.sqrt(metrics.mean_squared_error(training_data['SalePrice'], 
+               two_var_pred_train))
+testing_err_two = np.sqrt(metrics.mean_squared_error(testing_data['SalePrice'], 
+               two_var_pred_test))
+print(training_err_two)
+print(testing_err_two)
