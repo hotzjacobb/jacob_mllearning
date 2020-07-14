@@ -43,3 +43,6 @@ train_error = np.sqrt(metrics.mean_squared_error(training_data['SalePrice'], tra
 test_error = np.sqrt(metrics.mean_squared_error(testing_data['SalePrice'], test_predictions))
 print(train_error)
 print(test_error)
+
+housing_ds = (housing_ds - housing_ds.min()) / (housing_ds.max() - housing_ds.min())
+variances = housing_ds.std() ** 2
