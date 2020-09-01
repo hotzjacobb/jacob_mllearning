@@ -1,2 +1,2 @@
 # jacob_mllearning
-A repo with projects to learn about deep learning
+A repo with mini-projects to learn about machine learning / deep learning
